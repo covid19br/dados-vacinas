@@ -12,9 +12,12 @@ Na pasta doses_estados, os arquivos são separados por estado, e cada um tem os 
 |ag_10 | número de vacinas aplicadas para divisão etária de 10 em 10 anos | int |
 |ag_child | número de vacinas aplicadas para divisão etária considerando faixas especiais para crianças | int |
 
-Para ag_10, os códigos se traduzem:
+Observação: o antigo código "DU" (Dose Única) para a vacina Janssen foi atualizado para "D", representando somente "D", quando a Janssen é a primeira vacina a ser aplicada.
+
+Os códigos das faixas etárias se traduzem:
 
 | código | ag_10 | ag_child |
+|------|-----------|------|
 |  1 |   0-9 anos | 0-4 anos |
 |  2 | 10-19 anos | 5-11 anos |
 |  3 | 20-29 anos | 12-17 anos |
