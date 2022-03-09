@@ -59,13 +59,15 @@ Para as classificações na coluna dose, utiliza-se os seguintes códigos:
 | Dose | Descrição | Cálculo |
 |------|-----------|------|
 | D1 | variação do No de individuos somente com D1 | Soma de novas D1 registradas, subtração de indivíduos que passaram de D1 para D2 |
-| D2 | variação do No de individuos com D2 | Soma de indivíduos que passaram de D1 para D2 |
-| D2f | variação do No de individuos | Soma de registros de D2 sem registro de D1 |
-| D | variação do No de individuos somente com D| soma de registros de primeira dose com vacina da marca Janssen |
+| D2 | variação do No de individuos com D2+ | Soma de indivíduos que passaram de D1 para D2 |
+| D2f | variação do No de individuos com D2+ sem registro de D1 | Soma de registros de D2 sem registro de D1 |
+| D | variação do No de individuos com primeira dose com Janssen (D+) | soma de registros de primeira dose com vacina da marca Janssen |
 | D1cum | total de individuos com somente D1 no tempo t | D1 - D2 |
-| D2cum | total de individuos com D2 no tempo t | D2 + D2f |
-| Dcum | total de individuos com somente D no tempo t | D |
+| D2cum | total de individuos com D2+ no tempo t | D2 + D2f |
+| Dcum | total de individuos com somente D+ no tempo t | D |
 
+D2+: Indivíduos com ao menos a segunda dose, podendo ter recebido outras doses posteriormente. 
+D+: Indivíduos com primeira dose de Janssen, podendo ter recebido outras doses posteriormente. 
 Observação: os arquivos **doses_por_estado.csv** e **doses_serie_temporal.csv** são arquivos para contagem de doses, porém obsoletos.
 
 ## Tratamento dos dados
