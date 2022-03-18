@@ -25,11 +25,11 @@ Os códigos das faixas etárias se traduzem:
 |  3 | 20-29 anos | 12-17 anos |
 |  4 | 30-39 anos | 18-29 anos |
 |  5 | 40-49 anos | 30-39 anos |
-|  6 | 50-59 anos | 40-41 anos |
-|  7 | 60-69 anos | 50-51 anos |
-|  8 | 70-79 anos | 60-61 anos |
-|  9 | 80-89 anos | 70-71 anos |
-| 10 |   90+ anos | 80-81 anos |
+|  6 | 50-59 anos | 40-49 anos |
+|  7 | 60-69 anos | 50-59 anos |
+|  8 | 70-79 anos | 60-69 anos |
+|  9 | 80-89 anos | 70-79 anos |
+| 10 |   90+ anos | 80-89 anos |
 | 11 |            | 90+ anos |
 
 Na pasta principal (main), existem quatro arquivos de saída.
