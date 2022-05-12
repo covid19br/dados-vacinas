@@ -32,7 +32,16 @@ Os códigos das faixas etárias se traduzem:
 | 10 |   90+ anos | 80-89 anos |
 | 11 |            | 90+ anos |
 
-Na pasta principal (main), existem quatro arquivos de saída.
+## Arquivos de saída
+
+Na pasta principal (main), existem cinco arquivos de saída.
+- doses_cobertura_proporcao_mes.csv
+- doses_cobertura_proporcao_semana.csv
+- doses_cobertura_proporcao_mes_ordem.csv
+- doses_cobertura_proporcao_semana_ordem.csv
+- doses_ordem_uf.csv
+
+Enquanto os arquivos 'doses_cobertura_proporcao_mes.csv' e 'doses_cobertura_proporcao_semana.csv' se baseiam na classificação de doses de acordo com os dados informados pelo SI-PNI, os arquivos 'doses_cobertura_proporcao_mes_ordem.csv' e 'doses_cobertura_proporcao_semana_ordem.csv' classificam as doses de acordo com a **ordem de aplicação** em um mesmo registro de um indivíduo.
 
 **doses_cobertura_proporcao_mes.csv**
 
@@ -40,7 +49,7 @@ Na pasta principal (main), existem quatro arquivos de saída.
 |------|-----------|------|
 | month | primeiro dia do mês após a data de aplicação da dose | Date, formato YYYY-MM-DD |
 | agegroup | faixa etária (considerando a divisão ag_child) | int de 1 a 11 |
-| dose | população com determinada classificação de dose (ler mais abaixo) | factor, levels: D, D1, D2, D2f, D1cum, D2cum, Dcum |
+| dose | população com determinada classificação de dose (ler mais abaixo) | factor, levels: D, D1, D2, D2f, R, D1cum, D2cum, Dcum, Rcum |
 | n | tamanho da população com certa classificação de dose| int  |
 | UF | sigla da Unidade Federativa | factor |
 
@@ -50,7 +59,7 @@ Na pasta principal (main), existem quatro arquivos de saída.
 |------|-----------|------|
 | week | último dia da semana epidemiológica da data de aplicação da dose | Date, formato YYYY-MM-DD |
 | agegroup | faixa etária (considerando a divisão ag_child) | int de 1 a 11 |
-| dose | população com determinada classificação de dose (ler mais abaixo) | factor, levels: D, D1, D2, D2f, D1cum, D2cum, Dcum |
+| dose | população com determinada classificação de dose (ler mais abaixo) | factor, levels: D, D1, D2, D2f, R, D1cum, D2cum, Dcum, Rcum |
 | n | tamanho da população com certa classificação de dose| int  |
 | UF | sigla da Unidade Federativa | factor |
 
@@ -59,16 +68,64 @@ Para as classificações na coluna dose, utiliza-se os seguintes códigos:
 | Dose | Descrição | Cálculo |
 |------|-----------|------|
 | D1 | variação do No de individuos somente com D1 | Soma de novas D1 registradas, subtração de indivíduos que passaram de D1 para D2 |
-| D2 | variação do No de individuos com D2+ | Soma de indivíduos que passaram de D1 para D2 |
+| D2 | variação do No de individuos com D2+ | Soma de indivíduos que passaram de D1 para D2 ou D |
 | D2f | variação do No de individuos com D2+ sem registro de D1 | Soma de registros de D2 sem registro de D1 |
-| D | variação do No de individuos com primeira dose com Janssen (D+) | soma de registros de primeira dose com vacina da marca Janssen |
-| D1cum | total de individuos com somente D1 no tempo t | D1 - D2 |
-| D2cum | total de individuos com D2+ no tempo t | D2 + D2f |
-| Dcum | total de individuos com somente D+ no tempo t | D |
+| R | variação do No de individuos com R* | Soma de registros de R* |
+| D | variação do No de individuos com primeira dose com Janssen (D+) | soma de registros de primeira dose D (vacina da marca Janssen) |
+| D1cum | total acumulado de individuos com somente D1 no tempo t | D1 - D2 |
+| D2cum | total acumulado de individuos com D2+ no tempo t e sem dose de reforço | D2 + D2f - R |
+| Rcum | total acumulado de individuos com R no tempo t | R |
+| Dcum | total acumulado de individuos com somente D+ no tempo t | D |
 
-D2+: Indivíduos com ao menos a segunda dose, podendo ter recebido outras doses posteriormente. 
-D+: Indivíduos com primeira dose de Janssen, podendo ter recebido outras doses posteriormente. 
-Observação: os arquivos **doses_por_estado.csv** e **doses_serie_temporal.csv** são arquivos para contagem de doses, porém obsoletos.
+D2+: Indivíduos com ao menos a segunda dose (D2), podendo ter recebido outras doses posteriormente. 
+D+: Indivíduos com primeira dose de Janssen (D), podendo ter recebido outras doses posteriormente.
+R*: Indivíduos com dose R na terceira posição, e D1 presente no registro;
+    Indivíduos com dose R na segunda posição, e D1 ausente no registro;
+    Indivíduos com dose D (Janssen) na terceira posição, D1 presente no registro, D2 não é Janssen;
+    Indivíduos com dose D (Janssen) na segunda posição, D1 ausente no registro, D2 não é Janssen;
+    
+Oservações:
+- Esta classificação leva em consideração tanto a classificação de dose (ver **tratamento de dados**) a partir dos dados informados pelo SI-PNI, quanto a ordem da data de aplicação de cada dose para um mesmo registro (ID). No processamento, os dados de cada estado são avaliados separadamente. Desta forma, eventuais registros de indivíduos que tomaram alguma das doses em estados diferentes poderão ser considerados dois registros distintos.
+- Quando a segunda dose aplicada (de acordo com a ordem) é "D", da marca Janssen, porém a primeira dose é de outra marca, considera-se que o indivíduo passa para D2
+- Para o cálculo da cobertura de doses por estado por mês e semana epidemiológica (arquivos **doses_cobertura_proporcao_mes.csv** e **doses_cobertura_proporcao_semana.csv**), são filtrados os registros de indivíduos que receberam D2 no mesmo dia ou antes de D1.
+- Os arquivos **doses_por_estado.csv** e **doses_serie_temporal.csv** são arquivos para contagem de doses, porém obsoletos.
+
+**doses_cobertura_proporcao_mes_ordem.csv**
+
+| campo | descrição | tipo |
+|------|-----------|------|
+| month | primeiro dia do mês após a data de aplicação da dose | Date, formato YYYY-MM-DD |
+| agegroup | faixa etária (considerando a divisão ag_child) | int de 1 a 11 |
+| dose | dose de acordo com a ordem de aplicação (ler mais abaixo) | factor, levels: D1, D2, D3, D4, D5, D1cum, D2cum, D3cum, D4cum, D5cum |
+| n | tamanho da população com certa classificação de dose| int  |
+| first_dose | vacina utilizada na primeira dose (se Janssen ou outra marca) | factor, levels: "Janssen", "Other"  |
+| UF | sigla da Unidade Federativa | factor |
+
+**doses_cobertura_proporcao_semana_ordem.csv**
+
+| campo | descrição | tipo |
+|------|-----------|------|
+| week | último dia da semana epidemiológica da data de aplicação da dose | Date, formato YYYY-MM-DD |
+| agegroup | faixa etária (considerando a divisão ag_child) | int de 1 a 11 |
+| dose | dose de acordo com a ordem de aplicação (ler mais abaixo) | factor, levels: D1, D2, D3, D4, D5, D1cum, D2cum, D3cum, D4cum, D5cum |
+| n | tamanho da população com certa classificação de dose| int  |
+| first_dose | vacina utilizada na primeira dose (se Janssen ou outra marca) | factor, levels: "Janssen", "Other"  |
+| UF | sigla da Unidade Federativa | factor |
+
+Esta classificação das doses leva em consideração a ordem das datas de aplicações de doses em um mesmo registro, e ignora a classificação de doses de acordo com os dados fornecidos pelo SI-PNI.
+
+| Dose | Descrição | Cálculo |
+|------|-----------|------|
+| D1 | variação do No de individuos com somente uma dose | Soma de novas D1 registradas, subtração de indivíduos que passaram de D1 para D2 |
+| D2 | variação do No de individuos com duas doses | Soma de novas D2 registradas, subtração de indivíduos que passaram de D2 para D3 |
+| D3 | variação do No de individuos com três doses | Soma de novas D3 registradas, subtração de indivíduos que passaram de D3 para D4 |
+| D4 | variação do No de individuos com quatro doses | Soma de novas D4 registradas, subtração de indivíduos que passaram de D4 para D5 |
+| D5 | variação do No de individuos com cinco doses | Soma de novas D5 registradas |
+| D1cum | total acumulado de individuos com somente uma dose (D1) no tempo t | D1 - D2 |
+| D2cum | total acumulado de individuos com somente duas doses (D2) no tempo t | D2 - D3 |
+| D3cum | total acumulado de individuos com somente três doses (D3) no tempo t | D3 - D4 |
+| D4cum | total acumulado de individuos com somente quatro doses (D4) no tempo t | D4 - D5 |
+| D5cum | total acumulado de individuos com somente cinco doses (D5) no tempo t | D5 |
 
 ## Tratamento dos dados
 
@@ -81,6 +138,7 @@ Para classificação dos tipos de doses a partir dos dados brutos do SI-PNI, uti
 | 2 | D2 | "2ª Dose", "2ª Dose Revacinação" |
 | 3 | 3 | "3ª Dose", "3ª Dose Revacinação" |
 | 4 | 4 | "4ª Dose" |
+| 5 | 5 | "5ª Dose" |
 | ^Dose$ | D | "Dose" |
 | Adicional | DA | "Dose Adicional" |
 | Única | D | "Única" |
@@ -92,7 +150,6 @@ São automaticamente excluídos os seguintes casos:
 - Pacientes com data de nascimento anterior a 01-jan-1900
 - Registros de indivíduos (ID) com mais de 5 doses
 - Registros com mais de um mesmo tipo de dose por ID
-- Registros de indivíduos (ID) com mais de uma dose na mesma data de aplicação 
+- Registros de indivíduos (ID) com mais de uma dose na mesma data de aplicação
 
-Para o cálculo da cobertura de doses por estado por mês e semana epidemiológica (arquivos **doses_cobertura_proporcao_mes.csv** e **doses_cobertura_proporcao_semana.csv**), 
-são filtrados os registros de indivíduos que receberam D2 no mesmo dia ou antes de D1.
+
