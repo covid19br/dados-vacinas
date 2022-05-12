@@ -77,14 +77,14 @@ Para as classificações na coluna dose, utiliza-se os seguintes códigos:
 | Rcum | total acumulado de individuos com R no tempo t | R |
 | Dcum | total acumulado de individuos com somente D+ no tempo t | D |
 
-D2+: Indivíduos com ao menos a segunda dose (D2), podendo ter recebido outras doses posteriormente. 
-D+: Indivíduos com primeira dose de Janssen (D), podendo ter recebido outras doses posteriormente.
-R*: Indivíduos com dose R na terceira posição, e D1 presente no registro;
-    Indivíduos com dose R na segunda posição, e D1 ausente no registro;
-    Indivíduos com dose D (Janssen) na terceira posição, D1 presente no registro, D2 não é Janssen;
-    Indivíduos com dose D (Janssen) na segunda posição, D1 ausente no registro, D2 não é Janssen;
+- D2+: Indivíduos com ao menos a segunda dose (D2), podendo ter recebido outras doses posteriormente. 
+- D+: Indivíduos com primeira dose de Janssen (D), podendo ter recebido outras doses posteriormente.
+- R*: Indivíduos com dose R na terceira posição, e D1 presente no registro.  
+&emsp;&ensp;Indivíduos com dose R na segunda posição, e D1 ausente no registro.  
+&emsp;&ensp;Indivíduos com dose D (Janssen) na terceira posição, D1 presente no registro, D2 não é Janssen.  
+&emsp;&ensp;Indivíduos com dose D (Janssen) na segunda posição, D1 ausente no registro, D2 não é Janssen.  
     
-Oservações:
+Observações:
 - Esta classificação leva em consideração tanto a classificação de dose (ver **tratamento de dados**) a partir dos dados informados pelo SI-PNI, quanto a ordem da data de aplicação de cada dose para um mesmo registro (ID). No processamento, os dados de cada estado são avaliados separadamente. Desta forma, eventuais registros de indivíduos que tomaram alguma das doses em estados diferentes poderão ser considerados dois registros distintos.
 - Quando a segunda dose aplicada (de acordo com a ordem) é "D", da marca Janssen, porém a primeira dose é de outra marca, considera-se que o indivíduo passa para D2
 - Para o cálculo da cobertura de doses por estado por mês e semana epidemiológica (arquivos **doses_cobertura_proporcao_mes.csv** e **doses_cobertura_proporcao_semana.csv**), são filtrados os registros de indivíduos que receberam D2 no mesmo dia ou antes de D1.
